@@ -1,0 +1,102 @@
+---
+title: "A Quick Guide to Data Analysis Using R"
+author: "Paul Testa"
+date: "11/28/2016"
+output: html_document
+---
+
+# Overview
+
+This document provides a quick guide to get you set up to use `R`, a statistical programming languange, for empirical quantitative analysis. Specifically, we'll cover the following
+
+- Downloading and installing R and RStudio (a GUI that makes R nice and pretty).
+- Basics of coding in R and R Markdown
+- Setting up R to do your analysis
+    - Installing packages in R and loading libraries in R that do specific things
+    - Downloading and loading data
+- Cleaning and recoding data
+- Describing and Analyzing data to test hypothesis
+- Producing Figures and Tables
+- Additional Resources
+
+This may seem like a lot. In some ways it is. But think of it like cooking. You could do some cooking in a microwave (Excel) but to make a really nice dinner (your honors thesis), you need a good kitchen (R), the right tools (libraries in R), the best ingredients (interesting data), properly prepared (cleaned and recoded) to let you produce a delicious meal (convincing empirical analysis). Learning a little programming will help you do this in way that will save time and reduce errors. So let's begin!
+
+# Downloading and Installing R and R Studio
+
+First we'll get our kitchen set up by downloading R and then RStudio.
+
+- You can download R here: <https://cran.r-project.org/>
+- Next, download the desktop version of RStudio here: <https://www.rstudio.com/products/rstudio/download/>
+
+Make sure you pick the right version for your computer (i.e. Mac or PC)
+
+# Basics of coding in R and R Markdown
+
+This document is produced using R Mardown, a format that allows you to write code in `R` and text in markdown and compile it into a nice pretty document like an html file (or a word document or, with some additional software, a pdf). We'll cover more of how to write code and text in R Markdown in class. Essentially each .Rmd doucment is composed of the following:
+
+An (optional) YAML header surrounded by ---s
+
+    ---
+    title: "A Quick Guide to Data Analysis Using R"
+    author: "Paul Testa"
+    date: "11/28/2016"
+    output: html_document
+    ---
+
+R code chunks surrounded by ```s
+
+
+```{r}
+# Here's an example of an actual code chunk using R as a calculator
+2+2
+```
+
+
+Text mixed with simple text formatting (like this like)
+
+Think of your .Rmd file as a recipe that lays out all the steps in your analysis:
+
+- Setup
+- Preparation
+- Analysis
+- Presentation
+
+In class, we'll run code sequentially, executing it line-by-line in the console. When we're done, we'll "compile" our document. This essentially starts at the top of the file runs all the code, saves any output and combines it with our text to produce the final html file you're looking at.
+
+
+# Setup
+
+## Clearing your workspace
+
+In general, it's a good idea to clear out your workspace and start fresh, so typically we'll write this line of code
+
+```{r}
+rm(list=ls())
+```
+
+## Installing packages and loading libraries
+
+Next, we'll install packages that contain data, code and functions that as we'll see below, do useful things.
+
+One package we'll need is the `rmarkdown` which turns this .Rmd file into a html or pdf or word document.
+
+```{r,eval=F}
+install.packages("rmarkdown")
+```
+
+You only have to instatll a pacakge once, but each time you open R you'll need to load packages using the library function. For example, the "foreign" package is useful for loading different types of data.
+
+
+This next bit of code combines the install and library commands. Essetially, it installs the pacman package if it's not already installed and uses that the p_load function from that package to install (if not installed) and load other packages you'll use in your analysis.
+
+```{r}
+# Load and if necessary install packages
+if (!require("pacman")){ install.packages("pacman") }
+pacman::p_load("knitr","mosaic","plyr","ggplot2","readstata13","car","lmtest","sandwich","gtable","grid","texreg")
+```
+
+
+## Setting your working directory
+
+
+
