@@ -98,5 +98,22 @@ pacman::p_load("knitr","mosaic","plyr","ggplot2","readstata13","car","lmtest","s
 
 ## Setting your working directory
 
+Computers (for now...) a very obedient. They do exactly what we tell them to do. Most of the time this is great, but some of the time it's a pain, particularly when we're writing code and make a mistake. 
+
+For example, say we want to load a dataset (more on that below). Generally, we have to tell R exactly where to look to find this data. This can be tediuous, so usually, I like to include a line of code that sets the working driectory for R to where my code (.Rmd file) and data (.csv, .rda, .dta  etc. files are):
+
+```{r}
+setwd("~/Documents/_Brown/_Teaching/thesis")
+```
+
+We'll talk more about this in class. And R studio's drop down menu will also do this for you if you click: Session -> Set working directory -> To Source File Location
+
+## Loading Data
+
+Ok, let's load some data and get down to business. We'll work with some data from the 2016 National Elections Pilot Study. In class we'll  
+
+
+
+
 
 
