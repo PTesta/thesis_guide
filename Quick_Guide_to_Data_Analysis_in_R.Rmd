@@ -110,9 +110,13 @@ We'll talk more about this in class. And R studio's drop down menu will also do 
 
 ## Loading Data
 
-Ok, let's load some data and get down to business. We'll work with some data from the 2016 National Elections Pilot Study. In class we'll  
+Ok, let's load some data and get down to business. We'll work with some data from the 2016 National Elections Pilot Study. In class we'll download the data, save it into the folder with our code and load it directly. For now, we'll load it from the web:  
 
+```{r}
+nes<-read.csv(url("https://raw.github.com/PTesta/thesis_guide/master/anes_pilot_2016.csv"))
+```
 
+As you'll see in the "Environment" panel in the upper right hand of R Studio, there's now an object called "nes" in our workspace.
 
 
 
