@@ -103,20 +103,51 @@ Computers (for now...) a very obedient. They do exactly what we tell them to do.
 For example, say we want to load a dataset (more on that below). Generally, we have to tell R exactly where to look to find this data. This can be tediuous, so usually, I like to include a line of code that sets the working driectory for R to where my code (.Rmd file) and data (.csv, .rda, .dta  etc. files are):
 
 ```{r}
-setwd("~/Documents/_Brown/_Teaching/thesis")
+setwd("~/Documents/_Brown/_Teaching/thesis_guide")
 ```
 
 We'll talk more about this in class. And R studio's drop down menu will also do this for you if you click: Session -> Set working directory -> To Source File Location
 
 ## Loading Data
 
-Ok, let's load some data and get down to business. We'll work with some data from the 2016 National Elections Pilot Study. In class we'll download the data, save it into the folder with our code and load it directly. For now, we'll load it from the web:  
+Ok, let's load some data and get down to business. We'll work with some data from the [2016 National Elections Pilot Study](http://www.electionstudies.org/studypages/anes_pilot_2016/anes_pilot_2016.htm). 
+In class we'll download the data, save it into the folder with our code and load it directly. For now, we'll load it from the web:  
 
 ```{r}
 nes<-read.csv(url("https://raw.github.com/PTesta/thesis_guide/master/anes_pilot_2016.csv"))
 ```
 
-As you'll see in the "Environment" panel in the upper right hand of R Studio, there's now an object called "nes" in our workspace.
+As you'll see in the "Environment" panel in the upper right hand of R Studio, there's now an object called "nes" in our workspace. Next the name column in the Environment panel is a type column. You'll see that nes is a "data.frame" which is basically R's standard way for handling big spreadsheets of data. Each row in nes, corresponds to an individual survey respondent, each column corresponds to a variable or attribute of that respondent. We index rows by $i$ and columns by $j$ so that if we wanted to look at the first 5 characteristics of the first respondent we could type:
+
+```{r}
+nes[1,1:5]
+```
+
+Which is just a bunch of adminstrative data. If we wanted to see the partisan identification of the 73 respondent we would type
+
+```{r}
+nes[73, "pid7"]
+```
+
+Looking at the codebook, available here <http://www.electionstudies.org/studypages/anes_pilot_2016/anes_pilot_2016_CodebookUserGuide.pdf>
+
+We see that a value of 1 on the "pid7" variable corresponds to someone who considers themselves to be a Strong Democrat.
+
+There are lots of ways to look at the data. If we were interested in the education and party ID of the first ten respodents we could type
+
+```{r}
+nes[1:10, c("educ","pid7")]
+```
+
+Or if we wanted to know only the party ID of the 11 respondent we could also type
+
+```{r}
+nes$pid7[11]
+```
+
+Where the syntax says, in this object "nes" select the variable "$" with the name "pid7" and show me the eleventh element "[11]"
+
+
 
 
 
