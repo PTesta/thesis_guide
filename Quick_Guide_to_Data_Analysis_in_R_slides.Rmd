@@ -35,7 +35,7 @@ options(digits = 3)
 But first...
 
 ## One piece of fundamental knowledge
-
+\pause
 ![](https://i.imgflip.com/1f6cng.jpg)
 
 
@@ -50,9 +50,9 @@ But first...
 
 ## What does quantitative research do?
 
-- Description
+- Descriptions
 - Explanations
-- Prediction
+- Predictions
 \pause
 
 "All models are wrong, some models are useful" - George Box
@@ -92,7 +92,7 @@ But first...
 
 ## Introduction
 
-- A statment of your primary research question that:
+- A statement of your primary research question that:
     - Hooks the reader
     - Dispels any thoughts about "so what or why should we care"
     - Offers an overview of your contribution and approach
@@ -106,7 +106,7 @@ But first...
     - Good: Past research reaches conflicting conclusions and I offer an alternative approach that reconciles these competing views
     - Less good: Nobody's ever studied this before
 - Goal:
-    - Generate a set of expectations that have testable empirical implications.
+    - Generate a set of expectations that have  empirically testable implications.
 
 ## Data and Methods
 
@@ -131,11 +131,11 @@ But first...
 
 ## Types of Data
 
-- Qualitative vs Quantitave
+- Qualitative vs Quantitative
 - Levels of Measurement (NOIR)
     - Nominal: Gender, Party ID
     - Ordinal: Strongly Agree, Agree ... Disagree, Strongly Disagree
-    - Interval: Temperature (Celsuis or Farenheit)
+    - Interval: Temperature (Celsius or Fahrenheit)
     - Ratio: Income, Height, Temperature (Kelvin)
 
 The match between concepts and measurement is rarely perfect
@@ -155,7 +155,7 @@ The match between concepts and measurement is rarely perfect
 ## Methods: How do we know what method to use?
 
 - Driven by the question you want to ask.
-- Helpful to think in terms of models (simplications of the world)
+- Helpful to think in terms of models (simplifications of the world)
 - Later, we'll look at the relationship between support for Trump and education In general we might a negative relationship
 
 \[
@@ -170,7 +170,10 @@ The match between concepts and measurement is rarely perfect
 \text{Support Trump} \sim \underbrace{\text{Education}}_{(-)}
 \]
 
-- Using Ordinary Least Squares Regression, tool for describing how the mean of one variable changes (linearly) with changes in other variable(s). 
+- Using Ordinary Least Squares Regression, a tool for describing how the mean of one variable changes (linearly) with changes in other variable(s).
+
+## Methods: Mulitiple Regression
+
 - We can also estimate models that ask how support for trump changes conditional on both education and gender and controlling for the relationships between education and gender:
 
 \[
@@ -181,7 +184,7 @@ The match between concepts and measurement is rarely perfect
 
 - OLS is great for describing relationships (specifically for providing a linear estimate of how the conditional mean of some outcome, Y, varies with some predictors X)
 - Whether this variation is causal, is a much harder question to answer and typically follows from the logic of your design rather than the particular method you employ.
-- Even if we're not making causal claims, we want to convey something about the relative uncertainty of our findings using the logic and tools of statsitical inference.
+- Even if we're not making causal claims, we want to convey something about the relative uncertainty of our findings using the logic and tools of statistical inference.
 
 
 ## Statistical Inference: Some Definitions
@@ -196,7 +199,7 @@ The match between concepts and measurement is rarely perfect
 
 ## Sampling distributions
 
-Since we sampled from a random variable (the population distribution of adult male heights), our sample is a random variable, and our estimate (a function of a random variable) is itself a random variable with it's own **sampling distribution.** That is if we'd taken a different sample, we would have gotten a slightly different statistic.
+Since we sampled from a random variable (e.g. the population distribution of adult male heights), our sample is a random variable, and our estimate (a function of a random variable) is itself a random variable with it's own **sampling distribution.** That is if we'd taken a different sample, we would have gotten a slightly different statistic.
 
 
 
@@ -418,8 +421,6 @@ p.pdf.norm.3
 ```
 
 
-
-
 ## Type I and Type II Errors
 
 |                | Reject $H_0$ | Fail to Reject $H_0$ |
@@ -429,6 +430,52 @@ p.pdf.norm.3
 
 We generally choose tests to minimize Type I error. Why?
 
+
+## Relationship between Confidence Intervals and Hypothesis Tests
+
+```{r}
+# Invert Hypothesis test to get confidence interval
+# Fake data
+Y<-c(51.5, 50.7, 52.9, 50.7, 59.3, 51.4, 48.6, 58.7)
+D<-c(1,0,1,0,1,0,0,1)
+mu<-coef(lm(Y~D))["D"] 
+# mu= 5.21
+
+
+# Simulate constant additive effect
+add_effect<-function(null,newD){
+    newY<-Y+(newD*null)
+    coef(lm(newY~newD))["newD"]
+}
+# Enumerate Randomization
+omega<-do(1000)*sample(D,8,replace=F)
+omega<-unique(omega)
+omega<-data.frame(t(omega))
+dim(omega)
+# Get p values
+
+get_pval<-function(null_hyp){
+    dnull<-sapply(omega,function(x){add_effect(null=null_hyp,newD=x)})
+    thepge<-mean(zapsmall(dnull)>=zapsmall(mu))
+    theple<-mean(zapsmall(dnull)<=zapsmall(mu))
+    theptwosided<-2*min(thepge,theple)
+    return(c(h=null_hyp,ple=theple,pge=thepge,ptwo=theptwosided))
+}
+
+somehyp<-seq(-2,15,by=.25)
+theps<-sapply(somehyp,function(null){get_pval(null_hyp=null)})
+theps<-data.frame(t(theps))
+## Under the Sharp Null, What We Assume
+mu.dist<-NA
+for(i in 1:dim(omega)[2]){
+mu.dist[i]<-mean(Y[omega[,i]==1])-mean(Y[omega[,i]==0])
+}
+
+with(theps,plot(h,ptwo,ylab="p-value",xlab="Hypothesis",pch=20,col=ifelse(ptwo>0.05,"blue","red")))
+abline(h=0.05)
+abline(v=0.25)
+abline(v=10.25)
+```
 
 
 ## Research Question
@@ -446,9 +493,9 @@ Two theories of the origins of candy preferences:
 
 ## Expectations
 
-1. **Genes only** If candy perferences are primarily genetic, then once we've controlled for certain mutations, the relationship between liking digusting fruit-based candy and other social factors vanish
+1. **Genes only** If candy preferences are primarily genetic, then once we've controlled for certain mutations, the relationship between liking disgusting fruit-based candy and other social factors vanish
 2. **Environment only** If candy preferences are socially determined, then genes shouldn't matter.
-3. **Genes** $\times$ **Environment** Alterntively, the effects of certain genetic mutations may only be evident in certain enivornments
+3. **Genes** $\times$ **Environment** Alternatively, the effects of certain genetic mutations may only be evident in certain environments
 
 
 

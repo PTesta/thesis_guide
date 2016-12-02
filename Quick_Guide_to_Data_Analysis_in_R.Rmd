@@ -11,7 +11,7 @@ output:
 
 # Overview
 
-This document provides a quick guide to get you set up to use `R`, a statistical programming languange, for empirical quantitative analysis. Specifically, we'll cover the following
+This document provides a quick guide to get you set up to use `R`, a statistical programming language, for empirical quantitative analysis. Specifically, we'll cover the following
 
 - Downloading and installing R and RStudio (a GUI that makes R nice and pretty).
 - Basics of coding in R and R Markdown
@@ -36,7 +36,7 @@ Make sure you pick the right version for your computer (i.e. Mac or PC).
 
 # Basics of coding in R and compiling with R Markdown
 
-This document is produced using R Mardown, a format that allows you to write code in `R` and text in markdown and compile it into a nice pretty document like an html file (or a word document or, with some additional software, a pdf). We'll cover more of how to write code and text in R Markdown in class. Essentially each .Rmd doucment is composed of the following:
+This document is produced using R Markdown, a format that allows you to write code in `R` and text in markdown and compile it into a nice pretty document like an html file (or a word document or, with some additional software, a pdf). We'll cover more of how to write code and text in R Markdown in class. Essentially each .Rmd document is composed of the following:
 
 An (optional) YAML header surrounded by ---s
 
@@ -68,14 +68,14 @@ Think of your .Rmd file as a recipe that lays out all the steps in your analysis
 
 In class, we'll run code sequentially, executing it line-by-line in the console. When we're done, we'll "compile" our document. This essentially starts at the top of the file runs all the code, saves any output and combines it with our text to produce the final html file you're looking at. 
 
-In general, it's a good idea to compile often (as a way of checking for errors in your code). You do this by clicking the "knit" button in the script window (top left) or by clicking command+shift+k (cntrl+shift+k on a PC).
+In general, it's a good idea to compile often (as a way of checking for errors in your code). You do this by clicking the "knit" button in the script window (top left) or by clicking command+shift+k (ctrl+shift+k on a PC).
 
 
 # Setup
 
 ## Clearing your workspace
 
-In general, it's a good idea to clear out your workspace and start fresh, so typically we'll write this line of code
+In general, it's a good idea to clear out your work space and start fresh, so typically we'll write this line of code
 
 ```{r}
 rm(list=ls())
@@ -91,10 +91,10 @@ One package we'll need is the `rmarkdown` which turns this .Rmd file into a html
 install.packages("rmarkdown")
 ```
 
-You only have to instatll a pacakge once, but each time you open R you'll need to load packages using the library function. For example, the "foreign" package is useful for loading different types of data.
+You only have to install a package once, but each time you open R you'll need to load packages using the library function. For example, the "foreign" package is useful for loading different types of data.
 
 
-This next bit of code combines the install and library commands. Essetially, it installs the pacman package if it's not already installed and uses that the p_load function from that package to install (if not installed) and load other packages you'll use in your analysis.
+This next bit of code combines the install and library commands. Essentially, it installs the pacman package if it's not already installed and uses that the p_load function from that package to install (if not installed) and load other packages you'll use in your analysis.
 
 ```{r}
 # Load and if necessary install packages
@@ -111,7 +111,7 @@ pacman::p_load("knitr","mosaic","plyr","ggplot2","readstata13","car","lmtest","s
 
 Computers (for now...) a very obedient. They do exactly what we tell them to do. Most of the time this is great, but some of the time it's a pain, particularly when we're writing code and make a mistake. 
 
-For example, say we want to load a dataset (more on that below). Generally, we have to tell R exactly where to look to find this data. This can be tediuous, so usually, I like to include a line of code that sets the working driectory for R to where my code (.Rmd file) and data (.csv, .rda, .dta  etc. files are):
+For example, say we want to load a data set (more on that below). Generally, we have to tell R exactly where to look to find this data. This can be tedious, so usually, I like to include a line of code that sets the working directory for R to where my code (.Rmd file) and data (.csv, .rda, .dta  etc. files are):
 
 ```{r}
 setwd("~/Documents/_Brown/_Teaching/thesis_guide")
@@ -121,7 +121,7 @@ We'll talk more about this in class. And R studio's drop down menu will also do 
 
 ## Loading Data
 
-Ok, let's load some data and get down to business. We'll work with some data from the [2016 National Elections Pilot Study](http://www.electionstudies.org/studypages/anes_pilot_2016/anes_pilot_2016.htm). 
+OK, let's load some data and get down to business. We'll work with some data from the [2016 National Elections Pilot Study](http://www.electionstudies.org/studypages/anes_pilot_2016/anes_pilot_2016.htm). 
 In class we'll download the data, save it into the folder with our code and load it directly. For now, we'll load it from the web:  
 
 ```{r}
@@ -130,13 +130,13 @@ nes<-read.csv(url("https://raw.github.com/PTesta/thesis_guide/master/anes_pilot_
 
 ## Looking at your data
 
-As you'll see in the "Environment" panel in the upper right hand of R Studio, there's now an object called "nes" in our workspace. Next the name column in the Environment panel is a type column. You'll see that nes is a "data.frame" which is basically R's standard way for handling big spreadsheets of data. Each row in nes, corresponds to an individual survey respondent, each column corresponds to a variable or attribute of that respondent. We index rows by $i$ and columns by $j$ so that if we wanted to look at the first 5 characteristics of the first respondent we could type:
+As you'll see in the "Environment" panel in the upper right hand of R Studio, there's now an object called "nes" in our work space. Next the name column in the Environment panel is a type column. You'll see that nes is a "data.frame" which is basically R's standard way for handling big spreadsheets of data. Each row in nes, corresponds to an individual survey respondent, each column corresponds to a variable or attribute of that respondent. We index rows by $i$ and columns by $j$ so that if we wanted to look at the first 5 characteristics of the first respondent we could type:
 
 ```{r}
 nes[1,1:5]
 ```
 
-Which is just a bunch of adminstrative data. If we wanted to see the partisan identification of the 73 respondent we would type
+Which is just a bunch of administrative data. If we wanted to see the partisan identification of the 73 respondent we would type
 
 ```{r}
 nes[73, "pid7"]
@@ -146,7 +146,7 @@ Looking at the codebook, available here <http://www.electionstudies.org/studypag
 
 We see that a value of 1 on the "pid7" variable corresponds to someone who considers themselves to be a Strong Democrat.
 
-There are lots of ways to look at the data. If we were interested in the education and party ID of the first ten respodents we could type
+There are lots of ways to look at the data. If we were interested in the education and party ID of the first ten respondents we could type
 
 ```{r}
 nes[1:10, c("educ","pid7")]
@@ -193,10 +193,10 @@ table(nes$fttrump)
 
 Ugh, That's a lot of numbers. The key thing to note though are the three people who have a value of 998. These aren't people using a different temperature scale. Instead their people who didn't respond, or skipped the question.
 
-Different surveys have different conventions for how to label these responses. The NES typically uses 998 or 999. Some other surveys will leave them blank or code them as something else. For our purposes, we want to tell R to treat these data as "missing" or "not avaialbe". 
+Different surveys have different conventions for how to label these responses. The NES typically uses 998 or 999. Some other surveys will leave them blank or code them as something else. For our purposes, we want to tell R to treat these data as "missing" or "not available". 
 
-1. First we'll create a new variable, called "ft_trump" that's just a copy of the original varialbe
-2. Next, we'll set the values of this new variable that equal 998 to NA (where NA is R's way of knowing the data are "not availabe")
+1. First we'll create a new variable, called "ft_trump" that's just a copy of the original variable
+2. Next, we'll set the values of this new variable that equal 998 to NA (where NA is R's way of knowing the data are "not available")
 3. Then we'll compare our recoded variable to our raw variable to make sure everything looks good.
 
 ```{r}
@@ -209,7 +209,7 @@ summary(nes$fttrump)
 summary(nes$ft_trump)
 ```
 
-Note the different outputs of the summary function (which gives you the mininum 25th percentile, median [50th percentile], mean, 75th percentile, and maximum)
+Note the different outputs of the summary function (which gives you the minimum 25th percentile, median [50th percentile], mean, 75th percentile, and maximum)
 
 Let's do some more recoding. Specifically let's look at:
 
@@ -437,7 +437,7 @@ Seems pretty big, but how do we know it's not just a feature of this particular 
 t.test(ft_trump~white01,data=nes)
 ```
 
-The p-value from this test tells us that if this hypotheis were true, the chances of seeing a test statistic (a standardized difference of means) as large in absolute value as the one we did (t = -6.9466) is low. Similarly, the confidence interval of -19.66063 -10.99497 describes a range of plausible values (hyptoheses we would fail to reject given the data) for the actually difference of means in the population. 
+The p-value from this test tells us that if this hypothesis were true, the chances of seeing a test statistic (a standardized difference of means) as large in absolute value as the one we did (t = -6.9466) is low. Similarly, the confidence interval of -19.66063 -10.99497 describes a range of plausible values (hypotheses we would fail to reject given the data) for the actually difference of means in the population. 
 
 ## Bivariate Linear Regression with a Dichotmous Predictor
 
@@ -450,7 +450,7 @@ summary(m1)
 
 Those numbers should look familiar. The intercept is the mean among Whites, and the coefficient on nonwhite01 is the difference between the mean among Whites and the mean among non-whites.
 
-The test stastic is slightly different from the t-test because of some assumptions about equal or unequal variances in these two groups, which we won't concern ourselves with, but with some adjustments, the linear model can produce the same results
+The test statistic is slightly different from the t-test because of some assumptions about equal or unequal variances in these two groups, which we won't concern ourselves with, but with some adjustments, the linear model can produce the same results
 
 ```{r}
 coeftest(m1,vcovHC(m1,"HC2"))
@@ -468,13 +468,13 @@ summary(m2)
 
 
 
-Recall, racial identity is an ordinal variable. OLS treats it's as continous variable with interval properties (the change from 0 to 1 is the same from 3 to 4). For now we'll ignore this somewhat strong assumption and focus on the result, which is a weakly positive replatiship between feelings and racial identity. Specifically, someone who says their racial identity is not at all important, has generally cool feeling toward Trump 35.54. Someone who feels very strongly about their racial identity has a warmer feeling toward Trump (35.54+1.29$\times$4= `r 35.54+1.29*4`)
+Recall, racial identity is an ordinal variable. OLS treats it's as continuous variable with interval properties (the change from 0 to 1 is the same from 3 to 4). For now we'll ignore this somewhat strong assumption and focus on the result, which is a weakly positive relationship between feelings and racial identity. Specifically, someone who says their racial identity is not at all important, has generally cool feeling toward Trump 35.54. Someone who feels very strongly about their racial identity has a warmer feeling toward Trump (35.54+1.29$\times$4= `r 35.54+1.29*4`)
 
 ## Multiple regression
 
 Shouldn't both a person's race and the importance of their racial identity influence their feelings toward Trump? Most likely. Further, wouldn't we expect the effects of racial identity to vary among Whites and Non-Whites? Almost certainly. Finally aren't their other factors that may matter as well (age, gender, income, etc.). Yes again!
 
-Let's fit the following mutliple regression models to test these questions:
+Let's fit the following multiple regression models to test these questions:
 
 ```{r}
 m3<-lm(ft_trump~white01+racial_imp,nes)
@@ -517,7 +517,7 @@ The things we want to hold constant are:
 
 - Everything else in the model
 
-To do that, we'll create a prediction dataframe
+To do that, we'll create a prediction data frame
 
 ```{r}
 table(nes$racial_imp)
