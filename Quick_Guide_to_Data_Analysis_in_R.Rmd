@@ -2,7 +2,11 @@
 title: "A Quick Guide to Data Analysis Using R"
 author: "Paul Testa"
 date: "11/28/2016"
-output: html_document
+output:
+  html_document:
+    toc: yes
+  word_document:
+    toc: yes
 ---
 
 # Overview
@@ -30,7 +34,7 @@ First we'll get our kitchen set up by downloading R and then RStudio.
 
 Make sure you pick the right version for your computer (i.e. Mac or PC).
 
-# Basics of coding in R and R Markdown
+# Basics of coding in R and compiling with R Markdown
 
 This document is produced using R Mardown, a format that allows you to write code in `R` and text in markdown and compile it into a nice pretty document like an html file (or a word document or, with some additional software, a pdf). We'll cover more of how to write code and text in R Markdown in class. Essentially each .Rmd doucment is composed of the following:
 
@@ -551,4 +555,41 @@ So Whites for whom their racial identity is important are far more likely to fee
 
 # General Advice and Additional Resources
 
+All of this is a lot to take in. I've tried to cover some general things I imagine you'll want to do (load data, manipulate data, describe data, estimate regressions). Every project is different, so let me conclude by offering some general advice and specific resources to help you along the way.
+
+## General Advice
+
+- **Work sequentially:** Create an outline of the things you want to do, and then check them off
+- **Raw data is sacred** Don't manipulate it directly. Create copies of variables and recode them
+- **Recode Carefully** Check and recheck your recoding. Do the results look like what you think they should be
+- **Know your data** More broadly, look at and describe the data. Get a sense of the distribution of variables, make sure you're not drawing inferences based off a few cases
+- **Comment liberally** Using pound signs (hashtags as you kids call them) to explain what your code is doing. Both your future self and others will thank you.
+- **Compile often** Write some code, compile your document. If things fail to compile, R will typically tell you where the problem is.
+- **Don't get frustrated** Errors happen ALL THE TIME. And R is cryptic as to what the problem is, but as with any language, the more the use it, the easier it becomes and quicker you are at spotting errors. 
+- **Ask for help** You can email me at <paul_testa@brown.edu> or ask your Comp Sci friends, or good old Doctor Google. I guarantee if you have a problem, someone else has too and there are lots of good resources out their to help you solve it. 
+
+## Additional Resources
+
+Learning R:
+
+- <http://swirlstats.com/>
+- <http://www.ats.ucla.edu/stat/r/>
+- <https://www.r-bloggers.com/how-to-learn-r-2/>
+
+Learning R Markdown:
+
+- <http://rmarkdown.rstudio.com/lesson-1.html>
+
+Specific R problems
+
+- <https://www.google.com/>
+- <http://stackoverflow.com/questions/tagged/r>
+
+Nice stats with R textbook:
+
+- <http://www.mosaic-web.org/go/StatisticalModeling/>
+
+Specific Stats questions
+
+- <http://stats.stackexchange.com/>
 
