@@ -30,6 +30,7 @@ options(digits = 3)
 
 - Provide an overview of the steps to producing quantitative research
 - Offer a quick tutorial on how to do such research using R
+- All materials available online here <https://github.com/PTesta/thesis_guide>
 
 But first...
 
@@ -59,13 +60,14 @@ But first...
 
 ## What does quantitative research look like?
 
+\pause
 
 ![](http://www.relatably.com/m/img/meme-generator-girl-crying/4238916.jpg)
 
 
 ## What do my papers look like?
 
-- Introduction & Research 
+- Introduction & Research Question 
 - Theory & Expectations
 - Data & Methods
 - Results & Discussion
@@ -74,7 +76,7 @@ But first...
 
 ## What you've done
 
-- **Introduction & Research**
+- **Introduction & Research Question**
 - **Theory & Expectations**
 - *Data & Methods*
 - Results & Discussion
@@ -90,8 +92,21 @@ But first...
 
 ## Introduction
 
-Your chance to hook the reader dispel any "so what or why should we care questions" by clearly stating research question and plan for addressing it.
+- A statment of your primary research question that:
+    - Hooks the reader
+    - Dispels any thoughts about "so what or why should we care"
+    - Offers an overview of your contribution and approach
+ - Lots of ways to do this
+    - Puzzles
+    - Why ?s > What ?s
 
+## Theory
+
+- A place to motivate your research question, say from existing theory, past research compelling case studies, or perhaps a combination of this an more.
+    - Good: Past research reaches conflicting conclusions and I offer an alternative approach that reconciles these competing views
+    - Less good: Nobody's ever studied this before
+- Goal:
+    - Generate a set of expectations that have testable empirical implications.
 
 ## Data and Methods
 
@@ -162,7 +177,11 @@ The match between concepts and measurement is rarely perfect
 \text{Support Trump} \sim \underbrace{\text{Education}}_{(-)} + \underbrace{\text{Male}}_{(+)}
 \]
 
-## An aside on "co   ntrolling for X" 
+## An aside on "controlling for X" 
+
+- OLS is great for describing relationships (specifically for providing a linear estimate of how the conditional mean of some outcome, Y, varies with some predictors X)
+- Whether this variation is causal, is a much harder question to answer and typically follows from the logic of your design rather than the particular method you employ.
+- Even if we're not making causal claims, we want to convey something about the relative uncertainty of our findings using the logic and tools of statsitical inference.
 
 
 ## Statistical Inference: Some Definitions
@@ -185,8 +204,8 @@ Since we sampled from a random variable (the population distribution of adult ma
 
 The characteristics of this sampling distribution are governed by the underlying population, and so we can use statistics calculated from our sample to make probabilistic statements (inferences) about characteristics of the underlying/unobserved population of interest. We'll do so using two common tools:
 
-- confidence intervals
-- hypothesis tests
+- Confidence intervals
+- Hypothesis tests
 
 
 
