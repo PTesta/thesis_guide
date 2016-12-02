@@ -17,7 +17,7 @@ This document provides a quick guide to get you set up to use `R`, a statistical
 - Cleaning and recoding data
 - Describing and Analyzing data to test hypothesis
 - Producing Figures and Tables
-- Additional Resources
+- General Advice and Additional Resources
 
 This may seem like a lot. In some ways it is. But think of it like cooking. You could do some cooking in a microwave (Excel) but to make a really nice dinner (your honors thesis), you need a good kitchen (R), the right tools (libraries in R), the best ingredients (interesting data), properly prepared (cleaned and recoded) to let you produce a delicious meal (convincing empirical analysis). Learning a little programming will help you do this in way that will save time and reduce errors. So let's begin!
 
@@ -28,7 +28,7 @@ First we'll get our kitchen set up by downloading R and then RStudio.
 - You can download R here: <https://cran.r-project.org/>
 - Next, download the desktop version of RStudio here: <https://www.rstudio.com/products/rstudio/download/>
 
-Make sure you pick the right version for your computer (i.e. Mac or PC)
+Make sure you pick the right version for your computer (i.e. Mac or PC).
 
 # Basics of coding in R and R Markdown
 
@@ -54,6 +54,7 @@ R code chunks surrounded by ```s
 
 Text mixed with simple text formatting (like this like)
 
+
 Think of your .Rmd file as a recipe that lays out all the steps in your analysis:
 
 - Setup
@@ -61,7 +62,9 @@ Think of your .Rmd file as a recipe that lays out all the steps in your analysis
 - Analysis
 - Presentation
 
-In class, we'll run code sequentially, executing it line-by-line in the console. When we're done, we'll "compile" our document. This essentially starts at the top of the file runs all the code, saves any output and combines it with our text to produce the final html file you're looking at.
+In class, we'll run code sequentially, executing it line-by-line in the console. When we're done, we'll "compile" our document. This essentially starts at the top of the file runs all the code, saves any output and combines it with our text to produce the final html file you're looking at. 
+
+In general, it's a good idea to compile often (as a way of checking for errors in your code). You do this by clicking the "knit" button in the script window (top left) or by clicking command+shift+k (cntrl+shift+k on a PC).
 
 
 # Setup
@@ -92,7 +95,11 @@ This next bit of code combines the install and library commands. Essetially, it 
 ```{r}
 # Load and if necessary install packages
 if (!require("pacman")){ install.packages("pacman") }
-pacman::p_load("knitr","mosaic","plyr","ggplot2","readstata13","car","lmtest","sandwich","gtable","grid","texreg")
+pacman::p_load("knitr","mosaic","plyr","ggplot2","readstata13","car","lmtest","sandwich","gtable","grid","texreg","htmlTable","memisc","devtools","pander")
+
+# Do this once to get most uptodate version of pander
+#devtools::install_github('Rapporter/pander')
+
 ```
 
 
@@ -116,6 +123,8 @@ In class we'll download the data, save it into the folder with our code and load
 ```{r}
 nes<-read.csv(url("https://raw.github.com/PTesta/thesis_guide/master/anes_pilot_2016.csv"))
 ```
+
+## Looking at your data
 
 As you'll see in the "Environment" panel in the upper right hand of R Studio, there's now an object called "nes" in our workspace. Next the name column in the Environment panel is a type column. You'll see that nes is a "data.frame" which is basically R's standard way for handling big spreadsheets of data. Each row in nes, corresponds to an individual survey respondent, each column corresponds to a variable or attribute of that respondent. We index rows by $i$ and columns by $j$ so that if we wanted to look at the first 5 characteristics of the first respondent we could type:
 
@@ -147,8 +156,399 @@ nes$pid7[11]
 
 Where the syntax says, in this object "nes" select the variable "$" with the name "pid7" and show me the eleventh element "[11]"
 
+Finally, if we wanted to see how many observations and variables we had we could use the dim() function, to tell us the dimensions of our data.frame
+
+```{r}
+dim(nes)
+```
+
+So we have 1200 observations and 594 variables.
+
+# Preparation
+
+In this section, we'll cover some best practices for preparing your data for analysis. The basic steps are as follows:
+
+1. Identify your variables (columns in the data frame) of interest from a codebook
+2. Look at the codebook and raw data to understand what values your data can take
+3. Create a copy of the variable with a meaningful name
+4. Recode any problematic or 
+
+## Recoding data
+
+Let's look at people's feelings toward Donald Trump. The data contain a variable called fttrump. From the [questionaire](http://www.electionstudies.org/studypages/anes_pilot_2016/anes_pilot_2016_qnaire.pdf), we see that this variable contains people's responses to a "feeling thermometer" that asks them:
+    
+    We'd like to get your feelings toward some of our political leaders and other people who are in the news these days. We'll show the name of a person or group and we'd like you to rate that person or group using something we call the feeling thermometer.
+    Ratings between 50 degrees and 100 degrees mean that you feel favorable and warm toward the person. Ratings between 0 degrees and 50 degrees mean that you don't feel favorable toward the person and that you don't care too much for that person. You would rate the person at the 50 degree mark if you don't feel particularly warm or cold toward the person.
+    If we come to a person whose name you don't recognize, you don't need to rate that person. Just click Next and we'll move on to the next one.
+
+First, we'll use the table() function to take a quick look at the frequency of each unique value of "fttrump" (i.e. how many people felt really warmly toward him, how many felt lukewarm, etc).
+
+```{r}
+table(nes$fttrump)
+```
+
+Ugh, That's a lot of numbers. The key thing to note though are the three people who have a value of 998. These aren't people using a different temperature scale. Instead their people who didn't respond, or skipped the question.
+
+Different surveys have different conventions for how to label these responses. The NES typically uses 998 or 999. Some other surveys will leave them blank or code them as something else. For our purposes, we want to tell R to treat these data as "missing" or "not avaialbe". 
+
+1. First we'll create a new variable, called "ft_trump" that's just a copy of the original varialbe
+2. Next, we'll set the values of this new variable that equal 998 to NA (where NA is R's way of knowing the data are "not availabe")
+3. Then we'll compare our recoded variable to our raw variable to make sure everything looks good.
+
+```{r}
+# Create copy of fttrump for recoding
+nes$ft_trump<-nes$fttrump
+# Recode 998s to NAs
+nes$ft_trump[nes$ft_trump==998]<-NA
+# Compare raw data to recoded data
+summary(nes$fttrump)
+summary(nes$ft_trump)
+```
+
+Note the different outputs of the summary function (which gives you the mininum 25th percentile, median [50th percentile], mean, 75th percentile, and maximum)
+
+Let's do some more recoding. Specifically let's look at:
+
+- Gender
+- Education
+- Income
+- Age
+- PID
+- Racial identity
+
+```{r}
+# gender
+# 1= Male, 2=Female
+table(nes$gender)
+# female01
+# 0=male, 1=female
+nes$female01<-ifelse(nes$gender==1,0,1)
+with(nes,table(female01,gender))
+
+# educ
+# 1= No Hs 6=Post-grad
+table(nes$educ)
+# education
+nes$education<-nes$educ-1
+
+# faminc
+# 1-16
+table(nes$faminc)
+# No cluse what 31, 97, 98 mean, make them NA
+
+# income
+# 0-15
+nes$income<-nes$faminc-1
+nes$income[nes$income>15]<-NA
+table(nes$income,useNA="ifany")
+
+# Age
+# birthyr
+#table(nes$birthyr)
+#age
+nes$age<-2016-nes$birthyr
+summary(nes$age)
+
+# Race
+# race
+# 1 White 
+# 2 Black
+# 3 Hispanic 
+# 4 Asian
+# 5 Native American 
+# 6 Mixed
+# 7 Other
+# 8 Middle Eastern
+
+table(nes$race)
+
+# Give race meaningful levels
+
+nes$race_f<-recode(nes$race,"1='White';
+					2='Black';
+					3='Hispanic';
+					4='Asian';
+					5='Native American';
+					6='Mixed';
+					7='Other';
+					8='Middle Eastern'")
+
+with(nes, table(race_f,race))
+
+# Create White/Nonwhite indicator
+nes$white01<-ifelse(nes$race==1,1,0)
+nes$nonwhite01<-ifelse(nes$race==1,0,1)
+
+table(nes$nonwhite01,nes$race_f)
+
+# PID
+# pid7
+# 1=strong dem 7= strong rep, 8 = not sure
+table(nes$pid7)
+
+# pid
+nes$pid<-nes$pid7-1
+# recode notsures
+nes$pid[nes$pid>6]<-NA
+table(nes$pid,nes$pid7,useNA="ifany")
+
+# dem,rep,ind indicator
+nes$dem01<-ifelse(nes$pid<3,1,0)
+nes$rep01<-ifelse(nes$pid>3,1,0)
+nes$ind01<-ifelse(nes$pid==3,1,0)
+
+
+# race_ident
+# 1 Extremelyimportant; 5 Not important at all
+table(nes$race_ident)
+# reverse code so that higher values are more important
+nes$racial_imp<-(nes$race_ident-5)*-1
 
 
 
+```
+
+
+# Analysis
+
+Now we're ready to start cooking. Specifically, let's consider how support for trump varies conditionally on people's demographics and racial identity. We'll start by describing the data generally, and then move toward more nuanced tests of this association.
+
+```{r}
+summary(lm(ft_trump~racial_imp,nes))
+summary(lm(ft_trump~racial_imp*white01,nes))
+
+```
+
+
+## Descriptive Statistics
+
+First, let's create a table with some descriptive statistics. We'll save the output of the summary function to objects begun by "sum\_" for each variable. For variables without NAs we'll add an additional NA element using the c() function. 
+
+
+
+```{r}
+sum_trump<-summary(nes$ft_trump)
+sum_white<-c(summary(nes$white01),NA)
+sum_female<-c(summary(nes$female01),NA)
+sum_educ<-c(summary(nes$education),NA)
+sum_income<-summary(nes$income)
+sum_pid<-summary(nes$pid)
+sum_raceimp<-c(summary(nes$racial_imp),NA)
+```
+
+Next we'll stack each of these vectors of length 7 on top of each other to create a object called "tab_sum"
+
+```{r}
+tab_sum<-rbind(sum_trump,sum_white,sum_female,sum_educ,sum_income,sum_pid,
+sum_raceimp)
+tab_sum
+```
+
+Finally, we can use the kable() and row.names() functions to create a pretty table with
+
+```{r}
+
+tab_sum_md<-tab_sum
+row.names(tab_sum_md)<- c("FT Trump", "Prop. White","Prop. Female","Education","Income","Party ID","Imp of Racial ID")
+kable(tab_sum_md)
+```
+
+## Descriptive Figures
+
+Next, let's see how to produce some descriptive figures.
+
+### Histograms
+
+Distribution of feelings toward trump:
+
+```{r}
+hist(nes$ft_trump)
+```
+
+## Boxplots
+
+Another way of viewing the distribution of feelings toward Trump
+```{r}
+boxplot(nes$ft_trump)
+```
+
+Now by race
+
+```{r}
+boxplot(nes$ft_trump~nes$race_f,las=2)
+```
+
+Now by party id
+
+```{r}
+boxplot(nes$ft_trump~nes$pid,las=2)
+```
+
+## Scatterplots
+
+How do feelings toward trump vary by income
+
+```{r}
+with(nes,plot(income,ft_trump))
+```
+
+Hmm... hard to say. Let's jitter the income variable (add some random noise to each value) add a line to summarize this bivariate relationship
+
+```{r}
+with(nes,plot(jitter(income),ft_trump))
+abline(lm(ft_trump~income,nes),col="red")
+```
+
+
+```{r}
+with(nes,plot(jitter(education),jitter(ft_trump)))
+abline(lm(ft_trump~education,nes),col="red")
+
+```
+
+How did we choose those lines, and not some other line to summarize the data? We used a procedure Ordinary Least Squares regression, to choose an intercept and slope that would minimize the sum of squared residuals--the vertical distance between our line (what our model predicts) and the dots (what we observe). 
+
+Why did we decide to minimize the sum of squared residuals? Well, if we think about our line as being a prediction of the typical value of feelings toward Trump, we want a prediction that on average is neither too high, nor too low conditional on people's income or education. 
+
+## Hypothesis Testing and Confidence intervals
+
+Let's clarify our question about the relationship between race, the importance of one's racial identity and feelings toward Trump. For now, let's focus on the distinction between non-Whites and Whites. Given the election, we might expect that whites feel more warmly toward Trump than non-Whites. A simple way to test this would be to look at the difference in mean feeling thermometer responses between whites and non-whites
+
+```{r}
+ft_wh<-with(nes,mean(ft_trump[white01==1],na.rm=T))
+ft_wh
+ft_nonwh<-with(nes,mean(ft_trump[white01==0],na.rm=T))
+ft_nonwh
+```
+
+A difference of 
+
+```{r}
+ft_nonwh-ft_wh
+```
+
+Seems pretty big, but how do we know it's not just a feature of this particular sample or how certain are we that the true difference isn't something else? Let's formalize this concept of something else into a hypothesis, namely that the true difference (had we surveyed everyone in the US) is actually 0. We can use a difference of means or t-test to assess whether the data are consistent or inconsistent with this hypothesis
+
+```{r}
+t.test(ft_trump~white01,data=nes)
+```
+
+The p-value from this test tells us that if this hypotheis were true, the chances of seeing a test statistic (a standardized difference of means) as large in absolute value as the one we did (t = -6.9466) is low. Similarly, the confidence interval of -19.66063 -10.99497 describes a range of plausible values (hyptoheses we would fail to reject given the data) for the actually difference of means in the population. 
+
+## Bivariate Linear Regression with a Dichotmous Predictor
+
+Now let's delve a little deeper into our linear model that we used to descriptively describe the relationship between feelings toward Trump and income and education above. Specifically let's model feelings toward Trump with our indicator of whether you're non-White or not, using lm(), R's function for OLS regression. We'll save the output of lm() to an object called m1 so we can apply the summary function to it
+
+```{r}
+m1<-lm(ft_trump~white01,nes)
+summary(m1)
+```
+
+Those numbers should look familiar. The intercept is the mean among Whites, and the coefficient on nonwhite01 is the difference between the mean among Whites and the mean among non-whites.
+
+The test stastic is slightly different from the t-test because of some assumptions about equal or unequal variances in these two groups, which we won't concern ourselves with, but with some adjustments, the linear model can produce the same results
+
+```{r}
+coeftest(m1,vcovHC(m1,"HC2"))
+```
+
+## Bivariate Linear Regression with a Continuous Predictor
+
+So we've seen that linear regression essentially tells us how the mean of our outcome
+varies linearly with changes in our predictor. Let's consider how feelings toward Trump vary with the importance of ones racial identity
+
+```{r}
+m2<-lm(ft_trump~racial_imp,nes)
+summary(m2)
+```
+
+
+
+Recall, racial identity is an ordinal variable. OLS treats it's as continous variable with interval properties (the change from 0 to 1 is the same from 3 to 4). For now we'll ignore this somewhat strong assumption and focus on the result, which is a weakly positive replatiship between feelings and racial identity. Specifically, someone who says their racial identity is not at all important, has generally cool feeling toward Trump 35.54. Someone who feels very strongly about their racial identity has a warmer feeling toward Trump (35.54+1.29$\times$4= `r 35.54+1.29*4`)
+
+## Multiple regression
+
+Shouldn't both a person's race and the importance of their racial identity influence their feelings toward Trump? Most likely. Further, wouldn't we expect the effects of racial identity to vary among Whites and Non-Whites? Almost certainly. Finally aren't their other factors that may matter as well (age, gender, income, etc.). Yes again!
+
+Let's fit the following mutliple regression models to test these questions:
+
+```{r}
+m3<-lm(ft_trump~white01+racial_imp,nes)
+m4<-lm(ft_trump~white01*racial_imp,nes)
+m5<-lm(ft_trump~white01*racial_imp+
+           female01+income+education+age+pid,nes)
+```
+
+Multiple regression, provides a way of partitioning the variance in the outcome (feelings toward Trump) into the portions that can be explained by variance in each predictor (race, racial ID, income etc) independent of these relationships between these predictors. 
+
+
+## Regression Table
+Since we've got a lot of models, let's use some functions to format these models into a single easy to read table
+
+```{r}
+reg_tab<-mtable(
+            #'Model 1' = m1,
+            #'Model 2' = m2,
+            'Model 1' = m3,
+            'Model 2' = m4,
+            'Model 3' = m5,
+            summary.stats = c('R-squared','F','p','N'))
+```
+
+```{r}
+pander(reg_tab)
+```
+
+
+## Plotting Predicted Values
+
+Models 2 and 3 above suggest the relationship between the importance of racial identity and feelings toward Trump vary conditionally on one's race. Let's clarify this relationship by generating predicted values from Model 3.
+
+The things we want to vary are:
+
+- A person's race
+- The importance of their racial identity
+
+The things we want to hold constant are:
+
+- Everything else in the model
+
+To do that, we'll create a prediction dataframe
+
+```{r}
+table(nes$racial_imp)
+pred.df<-with(nes,data.frame(expand.grid(
+    white01=c(0,1),
+    racial_imp=c(0:4),
+    female01=0,
+    education=mean(education,na.rm=T),
+    income=mean(income,na.rm=T),
+    pid=mean(pid,na.rm=T),
+    age=mean(age,na.rm=T)
+)))
+pred.df$Race<-ifelse(pred.df$white01==1,"White","Non-White")
+pred.df$fit<-predict(m5,pred.df)
+# Confidence Intervlals
+pred.df$ll<-pred.df$fit-1.96*predict(m5,pred.df,se.fit = T)$se.fit
+pred.df$ul<-pred.df$fit+1.96*predict(m5,pred.df,se.fit = T)$se.fit
+
+```
+
+
+Then we'll use the ggplot() function to create a pretty figure:
+
+```{r}
+p1<-ggplot(pred.df,aes(racial_imp,fit,type=Race))+
+    geom_ribbon(aes(ymin=ll,ymax=ul,fill=Race),fill="grey",alpha=.3)+
+    geom_line(aes(col=Race))+
+    xlab("Importance of Racial ID")+
+    ylab("Predicted Feelings Toward Trump")
+
+p1
+```
+
+So Whites for whom their racial identity is important are far more likely to feel warmly toward trump, than Whites who's racial identity is not important. Interesting, the important of non-white's racial identity appears to have no relationship to their feelings toward Trump.
+
+# General Advice and Additional Resources
 
 

@@ -1,0 +1,531 @@
+---
+title: "A Quick Guide to Data Analysis Using R"
+author: "Paul Testa"
+date: \today
+output: 
+    beamer_presentation:
+        theme: "Berkeley"
+        fig_caption: false
+        includes:
+            in_header: header.tex
+---
+
+
+```{r init,echo=F,message=F}
+# look for and install missing packages and load them
+if (!require("pacman")){ install.packages("pacman") }
+pacman::p_load("mosaic","knitr","weights","ggplot2","devtools","acs","car","gridExtra","xtable","apsrtable","stargazer","texreg","arm")
+
+# Set global options for knitr
+# Set eval=F to produce just pdf with R code
+# Set eval=T with "fulldata.rda" in directory to reproduce data coding
+opts_chunk$set(eval=T,echo=F,results="hide",message=F,warning=F,cache=T)
+
+options(digits = 3)
+
+
+```
+
+## Goals
+
+- Provide an overview of the steps to producing quantitative research
+- Offer a quick tutorial on how to do such research using R
+
+But first...
+
+## One piece of fundamental knowledge
+
+![](https://i.imgflip.com/1f6cng.jpg)
+
+
+## Two kinds of people in this world
+\pause
+
+![](http://www.candywarehouse.com/assets/item/regular/mms-skittles-snicker-starburst-candy-fun-size-packs-130110-w.jpg)
+
+## What is it that we say we do here
+
+![](http://sflanders.net/wp-content/uploads/2015/07/what-exactly-would-you-say-you-do-here.jpg)
+
+## What does quantitative research do?
+
+- Description
+- Explanations
+- Prediction
+\pause
+
+"All models are wrong, some models are useful" - George Box
+
+
+## What does quantitative research look like?
+
+
+![](http://www.relatably.com/m/img/meme-generator-girl-crying/4238916.jpg)
+
+
+## What do my papers look like?
+
+- Introduction & Research 
+- Theory & Expectations
+- Data & Methods
+- Results & Discussion
+- Conclusion
+
+
+## What you've done
+
+- **Introduction & Research**
+- **Theory & Expectations**
+- *Data & Methods*
+- Results & Discussion
+- Conclusion
+
+## What we'll focus on today
+
+- Introduction 
+- Theory 
+- **Data & Methods**
+- **Results & Discussion**
+- Conclusion
+
+## Introduction
+
+Your chance to hook the reader dispel any "so what or why should we care questions" by clearly stating research question and plan for addressing it.
+
+
+## Data and Methods
+
+## What is Data?
+
+![](https://pmctvline2.files.wordpress.com/2016/07/star-trek-discovery-brent-spiner-data.jpg?w=620)
+
+## What is Data?
+
+- Information about the world
+
+
+## Where Does Data Come From?
+
+![](http://vignette2.wikia.nocookie.net/startrek/images/3/32/Data_and_Soong.jpg)
+
+## Where Does Data Come From?
+
+- Your hard work
+- Other people's hard work
+- A combination of both
+
+## Types of Data
+
+- Qualitative vs Quantitave
+- Levels of Measurement (NOIR)
+    - Nominal: Gender, Party ID
+    - Ordinal: Strongly Agree, Agree ... Disagree, Strongly Disagree
+    - Interval: Temperature (Celsuis or Farenheit)
+    - Ratio: Income, Height, Temperature (Kelvin)
+
+The match between concepts and measurement is rarely perfect
+
+## Methods: How can we use data to answer questions that interest us?
+
+- Measures of central tendency (what's typical)
+    - mean, median, mode, percentiles
+- Measures of dispersion (how much variation is there)
+    - Variance, standard deviations
+- Measures of association (how do things relate)
+    - Covariance, correlation, linear regression, ...
+- Methods for statistical inference
+    - Confidence intervals and hypothesis tests
+    - Tools for quantifying our confidence or certainty in our results 
+
+## Methods: How do we know what method to use?
+
+- Driven by the question you want to ask.
+- Helpful to think in terms of models (simplications of the world)
+- Later, we'll look at the relationship between support for Trump and education In general we might a negative relationship
+
+\[
+\text{Support Trump} \sim \underbrace{\text{Education}}_{(-)}
+\]
+
+## Methods: Regression
+
+- We can estimate this model:
+
+\[
+\text{Support Trump} \sim \underbrace{\text{Education}}_{(-)}
+\]
+
+- Using Ordinary Least Squares Regression, tool for describing how the mean of one variable changes (linearly) with changes in other variable(s). 
+- We can also estimate models that ask how support for trump changes conditional on both education and gender and controlling for the relationships between education and gender:
+
+\[
+\text{Support Trump} \sim \underbrace{\text{Education}}_{(-)} + \underbrace{\text{Male}}_{(+)}
+\]
+
+## An aside on "co   ntrolling for X" 
+
+
+## Statistical Inference: Some Definitions
+
+- **Population:** all the elements of a set of data. The thing we're interested in. Typically unobserved or unknown.
+    - **Parameters:** measurable characteristics of the population (e.g. expected value $\mu$, variance, $\sigma^2$) that are typically unknown or unknowable.
+- **Samples:** a subset of the population of size $N$ from which we try to learn things about our population of interest
+- **Statistical Inference:** The process of learning characteristics of the population from a sample
+    - **Estimand:** The thing we're trying to estimate.
+    - **Estimators:** a rule for calculating an estimate of a given quantity based on observed data. 
+    - **Statistic:** a measured characteristics of the sample (an estimate)
+
+## Sampling distributions
+
+Since we sampled from a random variable (the population distribution of adult male heights), our sample is a random variable, and our estimate (a function of a random variable) is itself a random variable with it's own **sampling distribution.** That is if we'd taken a different sample, we would have gotten a slightly different statistic.
+
+
+
+## Statistical Inference from Sampling Distributions
+
+The characteristics of this sampling distribution are governed by the underlying population, and so we can use statistics calculated from our sample to make probabilistic statements (inferences) about characteristics of the underlying/unobserved population of interest. We'll do so using two common tools:
+
+- confidence intervals
+- hypothesis tests
+
+
+
+# Confidence Intervals
+
+## Components of a Confidence Interval for a Sample Mean
+
+- $\mu$ and $\sigma$ the population mean and standard deviation (unknown)
+- $n$ sample size
+- $\bar{x}$ sample mean
+- $\hat{\sigma}$ sample variance
+- $se=\hat{\sigma}/\sqrt{n}$ the standard error: the standard deviation of the sampling distribution
+- $\alpha$ a significance level determining used to determine the width of the confidence interval (e.g. $(1-\alpha)\times 100$ percent c.i.)
+- $t$ a critical value determined by $n$ and $\alpha$, for finite sample using a $t$ distribution with degrees of freedom $n-1$
+
+
+## Constructing a Confidence Interval
+
+A 95\% confidence interval for $\bar{x}$
+
+\[
+\bar{x}\pm t*se
+\]
+
+## Example: 100 draws from N(0,1)
+
+```{r echo=T,eval=T,results="asis"}
+set.seed(123)
+# 100 draws from normal, calculate means
+n<-100; x<-rnorm(n); xbar<-mean(x)
+# Cacluate SE and critical value
+se<-sd(x)/sqrt(n); t<-qt(.975,99)*se
+# Cacluclate 95 CI
+ci<-xbar+c(-t,t)
+ci
+# Check
+t.test(x)$conf.int
+```
+
+
+## The confidence is about the interval, not the point estimate
+
+95 percent of the intervals constructed in this manner will contain the population value.  
+
+
+## Example: Population 100,000 units N(0,1)
+
+```{r}
+set.seed(1234567)
+pop<-rnorm(100000,0,1)
+plot(density(pop,bw=.25),lwd=2,col="black",ylim=c(0,1.6))
+
+library(mosaic)
+samples<-do(100)*sample(x=pop,size=100,replace=F)
+
+
+```
+
+## One Sample (n=100) from Population (N=100,000)
+
+```{r}
+which.max(colMeans(samples))
+plot(density(pop,bw=.25),lwd=2,col="black",ylim=c(0,1.6))
+lines(density(samples[,24]),col="red")
+rug(samples[,24],col="red")
+abline(v=mean(samples[,24]),col="red")
+```
+
+## Another Sample (n=100) from Population  (N=100,000)
+
+```{r}
+which.min(colMeans(samples))
+plot(density(pop,bw=.25),lwd=2,col="black",ylim=c(0,1.6))
+lines(density(samples[,28]),col="blue")
+rug(samples[,28],col="blue")
+abline(v=mean(samples[,28]),col="blue")
+```
+
+
+
+## Distribution of 100 Samples, N=100
+
+```{r}
+
+plot(density(pop,bw=.25),lwd=2,col="black",ylim=c(0,1.6))
+for(i in 1:100){
+    lines(density(samples[,i],bw=.25),lwd=.5,col="red")
+}
+lines(density(pop,bw=.25),lwd=2,col="black",ylim=c(0,1.6))
+```
+
+## Distribution of Sample Means
+
+```{r}
+samples$xbar<-colMeans(samples)
+plot(density(pop),lwd=2,col="black",ylim=c(0,1.6))
+for(i in 1:100){
+    lines(density(samples[,i]),lwd=.5,col="red")
+}
+lines(density(pop),lwd=2,col="black",ylim=c(0,1.6))
+rug(samples$xbar,col="blue")
+lines(density(samples$xbar),col="blue")
+
+```
+
+## Confidence intervals
+
+```{r}
+samples$sd<-apply(samples[,1:100],2,sd)
+samples$ll<-samples$xbar-qt(.975,100-1)*samples$sd/10
+samples$ul<-samples$xbar+qt(.975,100-1)*samples$sd/10
+samples$sample<-1:100
+sum(samples$ll>0)
+sum(samples$ul<0)
+qt(.975,100)
+
+p1<-ggplot(samples,aes(x=xbar,y=sample,xmin=ll,xmax=ul,col=ll<0&ul>0))+geom_point()+geom_vline(xintercept = 0)+
+    geom_errorbarh()+scale_color_discrete(guide=F)+labs(title="95% CIs for 100 samples")
+
+p2<-ggplot(samples,aes(x=xbar))+geom_density()+labs(title="Sampling Distribution for Sample Means")
+
+library(gridExtra)
+grid.arrange(p1,p2,heights=c(3,1))
+```
+
+
+# Hypothesis Testing
+
+## Components of a Hypothesis Test
+
+- Construct a hypothesis ($H_0$) and it's alternative ($H_1$)
+- Choose a test statistic $T$
+- Determine the distribution of $T$ under $H_0$
+- Is the observed value of $T$ likely to occur under $H_0$?
+    - Yes? Fail to reject $H_0$
+    - No? Reject $H_0$
+- p-value: conditional probability of observing a $T$ at least as extreme under $H_0$
+
+
+## Hypothesis Test for Proportions
+
+- $H_0: p=0.5$ and $H_1: p\neq 0.5$
+- Test statistic: $\bar{X}$
+- Standardize to compare to reference (normal) distribution by CLT:
+
+\[
+Z=\frac{\bar{X}-p_0}{s.e.}=\frac{\bar{X}-p_0}{\sqrt{p_0(1-p0)/n}}\approx N(0,1)
+\]
+
+- Is Z unusual?
+    - Reject $H_0$ if $|Z_obs|>Z_{\alpha/2}$
+    - Where $p(reject|H_0)=\alpha$
+
+## Example: Obama's Approval Rating
+
+- $H_0: p=0.5$ $H_1: p\neq0.5$
+- $\bar{X}=0.54$ $n=1018$
+- $Z_obs=(0.54-0.5)/\sqrt{.5\times.5/1018}= 2.55 > Z_{0.025}=1.96$
+- $p-value=0.005\times 2=0.01$
+- Reject the null
+
+## Example: Obama's Approval Rating
+
+```{r}
+normal <- function(mu=0, sigma=1, x){
+1/(sigma*sqrt(2*pi))*exp(-(x-mu)^2/(2*sigma^2))
+}
+normal_shade <- function(mu=0, sigma=1, x,l=-3,r=0){
+y <- normal(mu=mu, sigma=sigma, x)
+y[x < l | x > r] <- NA
+return(y)
+}
+p.pdf.norm<-ggplot(data.frame(x=seq(-3,3,by=0.01)), aes(x)) + stat_function(fun = dnorm)+ylim(0,1)+labs(title="Probability of Observed Test Statistic",y="")
+
+p.pdf.norm.1<-p.pdf.norm+
+      stat_function(data=data.frame(x=c(2.55,3)), fun=normal_shade, geom = 'area', fill = 'red', alpha = 0.2,
+                args=list(mu=0.01,sigma=1,l=2.525,r=4))+
+    geom_vline(xintercept = 2.55,col="red",size=1.5)+
+    stat_function(data=data.frame(x=c(-3,-2.55)), fun=normal_shade, geom = 'area', fill = 'red', alpha = 0.2,
+                args=list(mu=0.01,sigma=1,l=-3,r=-2.55))+
+        geom_vline(xintercept = -2.55,col="red",size=1.5,linetype=2)
+
+p.pdf.norm.1
+
+
+```
+
+
+## One sided test P(T>t)
+
+```{r}
+p.pdf.norm.2<-p.pdf.norm+
+      stat_function(data=data.frame(x=c(2.55,3)), fun=normal_shade, geom = 'area', fill = 'red', alpha = 0.2,
+                args=list(mu=0.01,sigma=1,l=2.525,r=4))+
+    geom_vline(xintercept = 2.55,col="red",size=1.5)
+p.pdf.norm.2
+
+
+```
+
+
+## One sided test P(T<t) the other way
+
+```{r}
+p.pdf.norm.3<-p.pdf.norm+
+    geom_vline(xintercept = 2.55,col="red",size=1.5)+
+    stat_function(data=data.frame(x=c(-3,2.55)), fun=normal_shade, geom = 'area', fill = 'red', alpha = 0.2,
+                args=list(mu=0.01,sigma=1,l=-3,r=2.54))
+p.pdf.norm.3
+```
+
+
+
+
+## Type I and Type II Errors
+
+|                | Reject $H_0$ | Fail to Reject $H_0$ |
+|----------------|--------------|----------------------|
+| $H_0$ is true  | Type I Error | Correct!             |
+| $H_0$ is false | Correct!     | Type II Error        |
+
+We generally choose tests to minimize Type I error. Why?
+
+
+
+## Research Question
+
+- Why is it that most people prefer chocolate-based candy while some degenerates prefer fruit-based candy?
+
+## Theory
+
+Two theories of the origins of candy preferences:
+
+- *Candy preferences are innate* 
+    - Testa et al. (n.d.) argue people's candy preferences are largely determined by our genes, with fruit candy preferences arising from a genetic mutation
+- *Candy preferences are socially constructed*
+    - Atset et al. (n.d) claim that candy preferences are function of our social environment, and specifically, our desire to appear cool
+
+## Expectations
+
+1. **Genes only** If candy perferences are primarily genetic, then once we've controlled for certain mutations, the relationship between liking digusting fruit-based candy and other social factors vanish
+2. **Environment only** If candy preferences are socially determined, then genes shouldn't matter.
+3. **Genes** $\times$ **Environment** Alterntively, the effects of certain genetic mutations may only be evident in certain enivornments
+
+
+
+## Some example data
+
+```{r}
+set.seed(123)
+n=1000
+Mutant=sample(c(0,1),n,replace=T)
+Dubstep_prop<-rnorm(n)
+Dubstep_prop<-(Dubstep_prop-min(Dubstep_prop))/(max(Dubstep_prop)-min(Dubstep_prop))
+probs<-c(-0.1*Mutant+.25*Dubstep_prop+1*Dubstep_prop*Mutant)
+probs<-(probs-min(probs))/(max(probs)-min(probs))
+Fruit=rbinom(n,1,prob=probs)
+summary(Fruit)
+m1<-lm(Fruit~Mutant)
+m2<-lm(Fruit~Dubstep_prop)
+m3<-lm(Fruit~Mutant+Dubstep_prop)
+m4<-lm(Fruit~Mutant*Dubstep_prop)
+
+m1.logit<-glm(Fruit~Mutant,family=binomial(link="logit"))
+m2.logit<-glm(Fruit~Dubstep_prop,family=binomial(link="logit"))
+m3.logit<-glm(Fruit~Mutant+Dubstep_prop,family=binomial(link="logit"))
+m4.logit<-glm(Fruit~Mutant*Dubstep_prop,family=binomial(link="logit"))
+
+```
+
+- Wonka Values Survey (WVS)
+    - N = 1,000, random sample of U.S. adults
+- Outcome: Preference for Fruit Candy (0-1 indicator, $\mu$=`r mean(Fruit)`)
+- Key Predictors: 
+    - Mutant (0-1 indicator, $N_mutant$=`r sum(Mutant)`)
+    - Percent of iTunes that's dubstep ($\mu$=`r mean(Dubstep_prop)`,$\sigma$=`r sd(Dubstep_prop)` )
+
+## Methods: Linear and Logistic Regressions
+
+\[
+Y=\beta_0+\beta_1Mutant
+\]
+
+\[
+Y=\beta_0+\beta_1Dubstep
+\]
+
+\[
+Y=\beta_0+\beta_1 Mutant+ \beta_2 Dubstep
+\]
+
+\[
+Y=\beta_0+\beta_1 Mutant+ \beta_2 Dubstep + \beta_3 Mutant \times Dubstep
+\]
+
+
+## Results: A Pretty Table
+
+```{r,results="asis"}
+texreg(list(m1,m2,m3,m4),scalebox = .6,caption="OLS Estimates")
+```
+
+## Results: A Pretty Table
+
+```{r,results="asis"}
+texreg(list(m1.logit,m2.logit,m3.logit,m4.logit),scalebox = .6,caption="Logistic Regression Estimates")
+```
+
+
+## Results: A Useless Figure
+The only useful pie chart
+
+![](http://cdn77.sadanduseless.com/wp-content/uploads/2016/03/piechart1.png)
+
+## Results: A Useful Figure
+
+```{r}
+df<-data.frame(expand.grid(Mutant=c(0,1),
+                 Dubstep_prop=seq(min(Dubstep_prop),max(Dubstep_prop),length.out = 20
+                                  )))
+df$ols<-predict(m4,df)
+df$logit<-predict(m4.logit,df,"response")
+df$Type=ifelse(df$Mutant==1,"Mutant","Norm")
+
+p1<-ggplot(df,aes(Dubstep_prop,ols,col=Type))+geom_line()+ylab("Predicted Proportion with \n Bad Taste in Candy")+ylim(-0.1,1.06)+xlab("Bad Taste in Music")
+#p1
+p2<-ggplot(df,aes(Dubstep_prop,logit,col=Type))+geom_line()+ylab("Predicted Probability of\n Bad Taste in Candy")+ylim(-0.1,1.06)+xlab("Bad Taste in Music")
+#p2
+
+grid.arrange(p1,p2,ncol=1)
+
+```
+
+
+## Conclusion
+
+- Dubstep leads to moral and tooth decay
+
+
+## Conclusion
+
+![](http://also.kottke.org/misc/images/wendys-dubstep.jpg)

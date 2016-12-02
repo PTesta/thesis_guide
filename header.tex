@@ -1,0 +1,62 @@
+\usetheme{Berkeley}                 
+\setbeamertemplate{navigation symbols}{}
+\usefonttheme{professionalfonts}
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{rotating}
+\usepackage{lscape}
+\usepackage{tabularx}
+\usepackage{dcolumn,booktabs,calc}
+\usepackage{setspace}
+\usepackage{pbox}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{mathtools}
+
+\makeatletter
+\let \@sverbatim \@verbatim
+\def \@verbatim {\@sverbatim \verbatimplus}
+{\catcode`'=13 \gdef \verbatimplus{\catcode`'=13 \chardef '=13 }} 
+\makeatother
+
+% enables backticks in verbatim
+\makeatletter
+{\catcode`\`=13
+\xdef\@verbatim{\unexpanded\expandafter{\@verbatim}\chardef\noexpand`=18 }
+}
+\makeatother
+
+%\newcommand{\argmin}{\arg\!\min}
+\newcommand{\E}{\mathrm{E}}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\usepackage{bm}
+\newcommand{\vv}{\bm{v}}
+\newcommand{\vu}{\bm{u}}
+\newcommand{\vy}{\bm{y}}
+\newcommand{\X}{\bm{X}}
+\newcommand{\Xt}{\bm{X}^{\prime}}
+\newcommand{\XtX}{\ensuremath{\bm{X}^{\prime}\bm{X}}}
+\newcommand{\XtXi}{\ensuremath{\left[\bm{X}^{\prime}\bm{X}\right]^{-1}}}
+\newcommand\nbm[2][]{\ensuremath{_{#1\times #2}}} 
+
+
+
+
+\newcommand\pder[2][]{\ensuremath{\frac{\partial#1}{\partial#2}}} 
+
+%\subtitle{Contact with the criminal justice system and political participation}
+% \author[Paul Testa]{Paul F. Testa  }
+% \date{September 3, 2016\\ \vspace{1em} \footnotesize{2016 Annual Meeting of the American Political Science Association, \hyperlink{appendix}{Philadelphia, PA}}}
+% \institute[Brown]{Brown University %\\
+
+%   % \smallskip
+%   % {ptesta2@illinois.edu --- \href{http://sites.google.com/site/paultesta/}{http://sites.google.com/site/paultesta/}}\\
+%   % \smallskip
+% }
+
+% %\logo{Brown Logo_2016_2 Color Process HZ_2400_480px.png}
+% \subject{APSA 2016}
